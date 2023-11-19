@@ -32,8 +32,16 @@ public class Task1 {
                     Function.identity(),
                     (id) -> orderedIdIndex.getAndIncrement()
             ));
-    List<Person> orderedPersons = new ArrayList<>(persons.size());
-    persons.forEach((person -> orderedPersons.add(personsIdOrderedMap.get(person.getId()), person)));
+    List<Person> orderedPersons = getNullArrayList(personIds.size());
+    persons.forEach((person -> orderedPersons.set(personsIdOrderedMap.get(person.getId()), person)));
     return orderedPersons;
+  }
+
+  private List<Person> getNullArrayList(int size){
+    List<Person> nullArrayList = new ArrayList<>();
+    for (int i = 0; i < size; i++){
+      nullArrayList.add(null);
+    }
+    return nullArrayList;
   }
 }
