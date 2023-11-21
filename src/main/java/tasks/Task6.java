@@ -23,11 +23,9 @@ public class Task6 {
     Map<Integer, String> idAreaName = areas.stream().collect(Collectors.toMap(Area::getId, Area::getName));
     return persons.stream()
             .flatMap(person -> personAreaIds.get(person.getId()).stream()
-                    .map(id ->
-                            person
-                                    .getFirstName()
-                                    + " - "
-                                    + idAreaName.get(id)))
+                    .map(id -> person.getFirstName()
+                            + " - "
+                            + idAreaName.get(id)))
             .collect(Collectors.toSet());
   }
 }
