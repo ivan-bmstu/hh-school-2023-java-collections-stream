@@ -24,9 +24,9 @@ public class Task8Test {
         List<Person> getNames0 = Collections.emptyList();
         List<Person> getNames1 = new ArrayList<>(Arrays.asList(person1, person2, person3, person4, person5));
         List<Person> getNames2 = new ArrayList<>(Arrays.asList(person1, person2, person1, person2, person5));
-        assertEquals(Collections.emptyList(), task.getNames(getNames0));
-        assertEquals(getNames1.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNames(getNames1));
-        assertEquals(getNames2.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNames(getNames2));
+        assertEquals(Collections.emptyList(), task.getNamesExceptFirst(getNames0));
+        assertEquals(getNames1.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNamesExceptFirst(getNames1));
+        assertEquals(getNames2.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNamesExceptFirst(getNames2));
     }
 
     @Test
@@ -41,9 +41,9 @@ public class Task8Test {
         List<Person> personEmptyList = Collections.emptyList();
         List<Person> personTest1List = new ArrayList<>(Arrays.asList(person1, person2, person3, person4, person5));
         List<Person> personTest2List = new ArrayList<>(Arrays.asList(person1, person2, person1, person2, person5));
-        assertEquals(Collections.emptyList(), task.getNames(personEmptyList));
-        assertEquals(personTest1List.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNames(personTest1List));
-        assertEquals(personTest2List.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNames(personTest2List));
+        assertEquals(Collections.emptySet(), task.getDifferentNamesExceptFirst(personEmptyList));
+        assertEquals(personTest1List.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNamesExceptFirst(personTest1List));
+        assertEquals(personTest2List.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNamesExceptFirst(personTest2List));
     }
 
     @Test
@@ -54,7 +54,7 @@ public class Task8Test {
         Person person2 = new Person(2, "Petr", null, "Petrovich", instant);
         Person person3 = new Person(3, null, "Ivanov", null, instant);
         assertEquals("Ivanov Ivan Ivanov", task.convertPersonToString(person1));
-        assertEquals(" Petr", task.convertPersonToString(person2)); // TODO очень плохой код в классе Task8, надо править!!!!
+        assertEquals("Petr", task.convertPersonToString(person2)); // !TO DO! - fixed очень плохой код в классе Task8, надо править!!!!
         assertEquals("Ivanov Ivanov", task.convertPersonToString(person3));
     }
 
