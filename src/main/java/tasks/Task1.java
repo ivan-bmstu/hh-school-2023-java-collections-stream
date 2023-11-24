@@ -30,12 +30,16 @@ public class Task1 {
     Map<Integer, Integer> personsIdOrderedMap = personIds.stream()
             .collect(Collectors.toMap(
                     Function.identity(),
-                    (id) -> orderedIdIndex.getAndIncrement()
+                    id -> orderedIdIndex.getAndIncrement()
             ));
     List<Person> orderedPersons = getNullArrayList(personIds.size());
     persons.forEach((person -> orderedPersons.set(personsIdOrderedMap.get(person.getId()), person)));
     return orderedPersons;
   }
+  /*
+  * -сложность алгоритма: n раз при вызове personService, n раз при создании словаря id -> нужная позиция в списке,
+  * n раз при создании ArrayList заполненного целиком null, n раз при переборе persons ==> итого O(4*n) ~ const * O(n)
+  * */
 
   private List<Person> getNullArrayList(int size){
     List<Person> nullArrayList = new ArrayList<>();
