@@ -16,7 +16,6 @@ public class Task7 {
   public static Set<String> vacancyNames(Collection<Company> companies) {
     return companies.stream()
             .flatMap(company -> company.getVacancies().stream())
-            .distinct()
             .map(Vacancy::getTitle)
             .collect(Collectors.toSet());
   }

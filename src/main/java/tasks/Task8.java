@@ -17,7 +17,6 @@ P.P.S Здесь ваши правки желательно прокоммент
  */
 public class Task8 {
 
-
   //Не хотим выдывать апи нашу фальшивую персону, поэтому конвертим начиная со второй
   public List<String> getNamesExceptFirst(List<Person> persons) {
     if (persons.isEmpty()) {
@@ -38,10 +37,10 @@ public class Task8 {
   *
   * -немного подправил code style в stream, перенес действия построчно
   *
-  * -я бы удалил комментарий перед методом, но сначала обсудил бы с командой (иначе можно и забыть, зачем убирать
-  * первую персону в принципе)
+  * -я бы удалил комментарий перед методом, но сначала обсудил бы с командой (иначе можно и забыть в будущем,
+  * зачем убирать первую персону в принципе)
   *
-  * -заменил persons.size() == 0 на persons.isEmpty()
+  * -заменил persons.size() == 0 на persons.isEmpty(), что будет эффективнее, если persons LinkedList
   * */
 
   public Set<String> getDifferentNamesExceptFirst(List<Person> persons) {
@@ -52,7 +51,8 @@ public class Task8 {
   *
   * -вызов метода stream.distinct() избыточен, т.к. Set возвращает только уникальные значения.
   * p.s. еле удержал себя, чтобы не изменить код: сделать все как в методе getNamesExceptFirst,
-  * но вернуть не List, а Set. Это небольшая оптимизация, но тут будет повторение кода (проверка на пустоту)
+  * но вернуть не List, а Set. Это небольшая оптимизация (не надо сворачивать стрим а потом разворачивать обратно),
+  * но тут будет повторение кода (проверка на пустоту)
   *
   * -имя метода поменял, причина и описание как и выше в методе getNamesExceptFirst
   *
@@ -64,7 +64,7 @@ public class Task8 {
   public String convertPersonToString(Person person) {
     return Stream.of(person.getSecondName(),
                     person.getFirstName(),
-                    person.getSecondName())
+                    person.getSecondName()) //TODO тут должно быть отчество
             .filter(Objects::nonNull)
             .collect(Collectors.joining(" "));
   }
@@ -82,7 +82,7 @@ public class Task8 {
             .collect(Collectors.toMap(Person::getId, this::convertPersonToString, (p1, p2) -> p1));
   }
   /*
-  * -переделал метод через stream, стало меньше кода, код читаемее
+  * -переделал метод через stream, стало меньше кода, читаемее
   * */
 
   public boolean hasSamePersons(Collection<Person> persons1, Collection<Person> persons2) {
