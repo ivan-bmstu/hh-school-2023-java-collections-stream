@@ -3,7 +3,6 @@ package tasks;
 import common.Person;
 import common.PersonService;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,28 +23,14 @@ public class Task1 {
 
   public List<Person> findOrderedPersons(List<Integer> personIds) {
     Set<Person> persons = personService.findPersons(personIds);
-    if(persons.isEmpty())
-      return Collections.emptyList();
-    AtomicInteger orderedIdIndex = new AtomicInteger(0);
-    Map<Integer, Integer> personsIdOrderedMap = personIds.stream()
-            .collect(Collectors.toMap(
-                    Function.identity(),
-                    id -> orderedIdIndex.getAndIncrement()
-            ));
-    List<Person> orderedPersons = getNullArrayList(personIds.size());
-    persons.forEach((person -> orderedPersons.set(personsIdOrderedMap.get(person.getId()), person)));
-    return orderedPersons;
+    Map<Integer, Person> idPersonMap = persons.stream()
+            .collect(Collectors.toMap(Person::getId, Function.identity()));
+    return personIds.stream()
+            .map(idPersonMap::get)
+            .collect(Collectors.toList());
   }
   /*
-  * -сложность алгоритма: n раз при вызове personService, n раз при создании словаря id -> нужная позиция в списке,
-  * n раз при создании ArrayList заполненного целиком null, n раз при переборе persons ==> итого O(4*n) ~ const * O(n)
+  * -сложность алгоритма: n раз при вызове personService, n раз при создании словаря id -> person,
+  * n раз при переборе personIds ==> итого O(3*n) ~ const * O(n)
   * */
-
-  private List<Person> getNullArrayList(int size){
-    List<Person> nullArrayList = new ArrayList<>();
-    for (int i = 0; i < size; i++){
-      nullArrayList.add(null);
-    }
-    return nullArrayList;
-  }
 }
