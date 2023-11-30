@@ -6,115 +6,118 @@ import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import org.junit.jupiter.api.Test;
 
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Task8Test {
+    static Person person1;
+    static Person person2;
+    static Person person3;
+    static Person person4;
+    static Person person5;
+    static Person person6;
+    static Person person7;
+    static Person person8;
 
-    @Test
-    void test1(){
-        Task8 task = new Task8();
-        Instant instant = Instant.now();
-        Person person1 = new Person(1, "Ivan", "Ivanov", "Ivanovich", instant);
-        Person person2 = new Person(2, "Petr", "Petrov", "Petrovich", instant);
-        Person person3 = new Person(3, "Alexandr", "Alexandrov", "Alexandrovich", instant);
-        Person person4 = new Person(4, "Andrey", "Andreyev", "Andreyevich", instant);
-        Person person5 = new Person(5, "Alex", "Alexeev", "Alexeevich", instant);
-        List<Person> getNames0 = Collections.emptyList();
-        List<Person> getNames1 = new ArrayList<>(Arrays.asList(person1, person2, person3, person4, person5));
-        List<Person> getNames2 = new ArrayList<>(Arrays.asList(person1, person2, person1, person2, person5));
-        assertEquals(Collections.emptyList(), task.getNames(getNames0));
-        assertEquals(getNames1.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNames(getNames1));
-        assertEquals(getNames2.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNames(getNames2));
+
+    @BeforeAll
+   public static void personsDataGenerate(){
+       Instant instant = Instant.now();
+       person1 = new Person(1, "Ivan", "Ivanov", "Ivanovich", instant);
+       person2 = new Person(2, "Petr", "Petrov", "Petrovich", instant);
+       person3 = new Person(3, "Alexandr", "Alexandrov", "Alexandrovich", instant);
+       person4 = new Person(4, "Andrey", "Andreyev", "Andreyevich", instant);
+       person5 = new Person(5, "Alex", "Alexeev", "Alexeevich", instant);
+       person6 = new Person(2, "Petr", null, "Petrovich", instant);
+       person7 = new Person(3, null, "Ivanov", null, instant);
+       person8 = new Person(5, "Alex", "Alexeev", "Alexeevich", instant);
     }
 
-    @Test
-    void test2(){
+    @ParameterizedTest
+    @MethodSource("getNamesDataGenerate")
+    void getNamesShouldGiveCorrectListPersonsName(List<Person> testList){
         Task8 task = new Task8();
-        Instant instant = Instant.now();
-        Person person1 = new Person(1, "Ivan", "Ivanov", "Ivanovich", instant);
-        Person person2 = new Person(2, "Petr", "Petrov", "Petrovich", instant);
-        Person person3 = new Person(3, "Alexandr", "Alexandrov", "Alexandrovich", instant);
-        Person person4 = new Person(4, "Andrey", "Andreyev", "Andreyevich", instant);
-        Person person5 = new Person(5, "Alex", "Alexeev", "Alexeevich", instant);
-        List<Person> personEmptyList = Collections.emptyList();
-        List<Person> personTest1List = new ArrayList<>(Arrays.asList(person1, person2, person3, person4, person5));
-        List<Person> personTest2List = new ArrayList<>(Arrays.asList(person1, person2, person1, person2, person5));
-        assertEquals(Collections.emptySet(), task.getDifferentNames(personEmptyList));
-        assertEquals(personTest1List.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNames(personTest1List));
-        assertEquals(personTest2List.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNames(personTest2List));
+        assertEquals(testList.stream().skip(1).map(Person::getFirstName).collect(Collectors.toList()), task.getNames(testList));
     }
 
-    @Test
-    void test3(){
+    @ParameterizedTest
+    @MethodSource("getNamesDataGenerate")
+    void getDifferentNamesShouldGiveCorrectSetPersonsName(List<Person> testList){
         Task8 task = new Task8();
-        Instant instant = Instant.now();
-        Person person1 = new Person(1, "Ivan", "Ivanov", "Ivanovich", instant);
-        Person person2 = new Person(2, "Petr", null, "Petrovich", instant);
-        Person person3 = new Person(3, null, "Ivanov", null, instant);
-        assertEquals("Ivanov Ivan Ivanovich", task.convertPersonToString(person1));
-        assertEquals("Petr Petrovich", task.convertPersonToString(person2));
-        assertEquals("Ivanov", task.convertPersonToString(person3));
+        assertEquals(testList.stream().skip(1).map(Person::getFirstName).collect(Collectors.toSet()), task.getDifferentNames(testList));
     }
 
-    @Test
-    void test4(){
+    @ParameterizedTest
+    @MethodSource("convertPersonToStringDataGenerate")
+    void convertPersonToStringShouldGiveAvailableFullName(Person person, String input){
         Task8 task = new Task8();
-        Instant instant = Instant.now();
-        Person person1 = new Person(1, "Ivan", "Ivanov", "Ivanovich", instant);
-        Person person2 = new Person(2, "Petr", "Petrov", "Petrovich", instant);
-        Person person3 = new Person(3, "Alexandr", "Alexandrov", "Alexandrovich", instant);
-        Person person4 = new Person(4, "Andrey", "Andreyev", "Andreyevich", instant);
-        Person person5 = new Person(5, "Alex", "Alexeev", "Alexeevich", instant);
-        Collection<Person> persons0 = Collections.emptyList();
-        Collection<Person> persons1 = Stream.of(person1, person2, person3, person4, person5).toList();
-        Collection<Person> persons2 = Stream.of(person1, person2, person1, person2, person5).toList();
-        Map<Integer, String> personEmptyMap0 = Collections.emptyMap();
+        assertEquals(input, task.convertPersonToString(person));
+    }
 
-        Map<Integer, String> personEmptyMap1 = persons1.stream()
+    @ParameterizedTest
+    @MethodSource("getNamesDataGenerate")
+    void getPersonNamesShouldGiveMapIdFullName(List<Person> testList){
+        Task8 task = new Task8();
+        Map<Integer, String> personMapValid = testList.stream()
                 .collect(Collectors.toMap(Person::getId, task::convertPersonToString, (p1, p2) -> p1));
-
-        Map<Integer, String> personEmptyMap2 = persons2.stream()
-                .collect(Collectors.toMap(Person::getId, task::convertPersonToString, (p1, p2) -> p1));
-
-        assertEquals(personEmptyMap0, task.getPersonNames(persons0));
-        assertEquals(personEmptyMap1, task.getPersonNames(persons1));
-        assertEquals(personEmptyMap2, task.getPersonNames(persons2));
+        assertEquals(personMapValid, task.getPersonNames(testList));
     }
 
-    @Test
-    void test5(){
+    @ParameterizedTest
+    @MethodSource("hasSamePersonsDataGenerate")
+    void hasSamePersonsShouldGiveBooleanResult(Collection<Person> persons1, Collection<Person> persons2, boolean isDisjoint){
         Task8 task = new Task8();
-        Instant instant = Instant.now();
-        Person person1 = new Person(1, "Ivan", "Ivanov", "Ivanovich", instant);
-        Person person2 = new Person(2, "Petr", "Petrov", "Petrovich", instant);
-        Person person3 = new Person(3, "Alexandr", "Alexandrov", "Alexandrovich", instant);
-        Person person4 = new Person(4, "Andrey", "Andreyev", "Andreyevich", instant);
-        Person person5 = new Person(5, "Alex", "Alexeev", "Alexeevich", instant);
-        Collection<Person> persons0 = Collections.emptyList();
-        Collection<Person> persons00 = Collections.emptyList();
-        Collection<Person> persons1 = Stream.of(person1, person2, person3).toList();
-        Collection<Person> persons2 = Stream.of(person1, person2).toList();
-        Collection<Person> persons3 = Stream.of(person3, person4).toList();
-        Collection<Person> persons4 = Stream.of(person5).toList();
-        assertFalse(task.hasSamePersons(persons0, persons00));
-        assertFalse(task.hasSamePersons(persons0, persons0));
-        assertFalse(task.hasSamePersons(persons1, persons0));
-        assertTrue(task.hasSamePersons(persons1, persons2));
-        assertTrue(task.hasSamePersons(persons1, persons3));
-        assertTrue(task.hasSamePersons(persons1, persons1));
-        assertFalse(task.hasSamePersons(persons1, persons4));
+        assertEquals(task.hasSamePersons(persons1, persons2), isDisjoint);
     }
 
-    @Test
-    void test6(){
+    @ParameterizedTest
+    @MethodSource("countEvenShouldGiveCountOfEvenNumbers")
+    void countEvenShouldGive(Stream<Integer> intStream, int evenCount){
         Task8 task = new Task8();
-        assertEquals(0, task.countEven(Stream.of()));
-        assertEquals(1, task.countEven(Stream.of(2)));
-        assertEquals(1, task.countEven(Stream.of(1, 2)));
-        assertEquals(6, task.countEven(Stream.of(1, 2, 1, 2, 1, 2, 1, 2, 2, 10)));
-        assertEquals(0, task.countEven(Stream.of(1, 1, 1, 1, 1, 1, 101, 1, 1, 11)));
+        assertEquals(evenCount, task.countEven(intStream));
+    }
 
+    private static Stream<Arguments> getNamesDataGenerate(){
+        return Stream.of(
+                Arguments.of(Collections.emptyList()),
+                Arguments.of(List.of(person1, person2, person3, person4, person5)),
+                Arguments.of(List.of(person1, person2, person1, person2, person5))
+        );
+    }
+
+    private static Stream<Arguments> convertPersonToStringDataGenerate(){
+        return Stream.of(
+                Arguments.of(person1, "Ivanov Ivan Ivanovich"),
+                Arguments.of(person6, "Petr Petrovich"),
+                Arguments.of(person7, "Ivanov")
+        );
+    }
+
+    private static Stream<Arguments> hasSamePersonsDataGenerate(){
+        Collection<Person> emptyColletcion = Collections.emptyList();
+        return Stream.of(
+                Arguments.of(Collections.emptyList(), Collections.emptyList(), false),
+                Arguments.of(emptyColletcion, emptyColletcion, false),
+                Arguments.of(List.of(person1, person2, person3), emptyColletcion, false),
+                Arguments.of(List.of(person1, person2, person3), List.of(person1, person2), true),
+                Arguments.of(List.of(person1, person2, person3), List.of(person3, person4), true),
+                Arguments.of(List.of(person1, person2, person3), List.of(person1, person2, person3), true),
+                Arguments.of(List.of(person1, person2, person3), List.of(person5), false)
+                );
+    }
+
+    private static Stream<Arguments> countEvenShouldGiveCountOfEvenNumbers(){
+        return Stream.of(
+                Arguments.of(Stream.of(), 0),
+                Arguments.of(Stream.of(2), 1),
+                Arguments.of(Stream.of(1, 2), 1),
+                Arguments.of(Stream.of(1, 2, 1, 2, 1, 2, 1, 2, 2, 10), 6),
+                Arguments.of(Stream.of(1, 1, 1, 1, 1, 1, 101, 1, 1, 11), 0),
+                Arguments.of(Stream.of(1, 2, 1, 2, 1, 2, 1, 2, 2, 10).parallel(), 6)
+                );
     }
 }
